@@ -65,7 +65,7 @@ class BlogController extends Controller
         $request->validate([
             'title' => 'required|max:255|string',
             'description' => 'required|string',
-            'image' => 'required|image|mimes:jpeg,jpg,png,gif,svg|max:2048'
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,gif,svg|max:2048'
         ]);
 
         $imagePath= null;
