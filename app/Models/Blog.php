@@ -28,13 +28,13 @@ class Blog extends Model
     }
 
     // Accessor to check if the current logged-in user liked the blog
-    public function getIsLikedAttribute(){
-        if(auth()->check()){
-            return $this->likes()->where('user_id', auth()->id())->exists();
-        }
-        return false;
-    }
+    // public function getIsLikedAttribute(){
+    //     if(auth()->check()){
+    //         return $this->likes()->where('user_id', auth()->id())->exists();
+    //     }
+    //     return false;
+    // }
 
     // Append 'is_liked' to the model's array form
-    protected $appends = ['is_liked']; 
+    // protected $appends = ['is_liked']; 
 }

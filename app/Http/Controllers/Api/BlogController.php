@@ -26,7 +26,10 @@ class BlogController extends Controller
             $searchTerm = $request->search;
 
             $query->where('title', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('description', 'like', '%' . $searchTerm . '%');
+                  ->orWhere('description', 'like', '%' . $searchTerm . '%')
+                  ->orWhereHas('user',function($query) use ($searchTerm){
+                        $query->where('email', '=', $searchTerm );
+                    });
         }
 
 
@@ -50,6 +53,14 @@ class BlogController extends Controller
         }
 
         $blogs = $query->paginate(5);
+
+        // Add is_liked 
+        if (Auth::check()) {
+            $blogs->getCollection()->transform(function ($blog) {
+                $blog->is_liked = $blog->likes()->where('user_id', Auth::id())->exists();
+                return $blog;
+            });
+        }
 
         return response()->json([
             'message' => 'blogs retreived successfully',
