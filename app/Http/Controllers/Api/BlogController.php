@@ -19,7 +19,16 @@ class BlogController extends Controller
      */
     public function index(Request $request)
     {
+        $user = Auth::user();
+
         $query = Blog::with('user', 'likes');
+
+        //Add is_liked
+         if ($user) {
+        $query->withExists(['likes as is_liked' => function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        }]);
+        }
 
         // Search filter
         if($request->has('search') && !empty($request->search)){
@@ -54,13 +63,7 @@ class BlogController extends Controller
 
         $blogs = $query->paginate(5);
 
-        // Add is_liked 
-        if (Auth::check()) {
-            $blogs->getCollection()->transform(function ($blog) {
-                $blog->is_liked = $blog->likes()->where('user_id', Auth::id())->exists();
-                return $blog;
-            });
-        }
+
 
         return response()->json([
             'message' => 'blogs retreived successfully',
